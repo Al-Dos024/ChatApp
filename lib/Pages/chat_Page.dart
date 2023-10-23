@@ -2,21 +2,27 @@
 
 import 'package:chat_app/Widgets/Chat_Bubble.dart';
 import 'package:chat_app/constants.dart';
+import 'package:chat_app/models/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatelessWidget {
   static String id = 'Chat Page';
+  final _controller = ScrollController();
   CollectionReference messages =
       FirebaseFirestore.instance.collection(kMessagesCollections);
   TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuerySnapshot>(
-      future: messages.get(),
+    var email = ModalRoute.of(context)!.settings.arguments;
+    return StreamBuilder<QuerySnapshot>(
+      stream: messages.orderBy(kCreatedAt, descending: true).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          print(snapshot.data!.docs[0]['message']);
+          List<Message> messageList = [];
+          for (int i = 0; i < snapshot.data!.docs.length; i++) {
+            messageList.add(Message.fromJson(snapshot.data!.docs[i]));
+          }
           return Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: false,
@@ -37,8 +43,15 @@ class ChatPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: ListView.builder(
+                    reverse: true,
+                    controller: _controller,
+                    itemCount: messageList.length,
                     itemBuilder: (context, index) {
-                      return const chatBubble();
+                      return messageList[index].id == email
+                          ? chatBubble(
+                              message: messageList[index],
+                            )
+                          : chatBubbleFromfriend(message: messageList[index]);
                     },
                   ),
                 ),
@@ -48,9 +61,15 @@ class ChatPage extends StatelessWidget {
                     controller: controller,
                     onSubmitted: (value) {
                       messages.add(
-                        {'message': value},
+                        {
+                          kmessage: value,
+                          kCreatedAt: DateTime.now(),
+                          'id': email
+                        },
                       );
                       controller.clear();
+                      _controller.animateTo(0,
+                          duration: Duration(seconds: 5), curve: Curves.easeIn);
                     },
                     decoration: InputDecoration(
                       hintText: 'Send Message ',

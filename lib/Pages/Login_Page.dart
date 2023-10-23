@@ -83,6 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 15,
                 ),
                 CustomFormTextField(
+                  obscureText: true,
                   hintText: 'Password',
                   onChange: (dataP) {
                     password = dataP;
@@ -98,7 +99,8 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {});
                       try {
                         await loginUserAccount();
-                        Navigator.pushNamed(context, ChatPage.id);
+                        Navigator.pushNamed(context, ChatPage.id,
+                            arguments: email);
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {
                           showSnackBar(context, 'No user found for that email');
