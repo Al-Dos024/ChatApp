@@ -1,12 +1,10 @@
 // ignore_for_file: file_names, use_build_context_synchronously, avoid_print, must_be_immutable
-
 import 'package:chat_app/Pages/Register_Page.dart';
 import 'package:chat_app/Pages/chat_Page.dart';
 import 'package:chat_app/Widgets/Custom_Form_Text_Field.dart';
 import 'package:chat_app/Widgets/Custom_button.dart';
-import 'package:chat_app/cubit/cubit/login_cubit.dart';
+import 'package:chat_app/cubit/login_cubit.dart';
 import 'package:chat_app/helper/show_SnackBar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -118,10 +116,14 @@ class LoginPage extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return LoginPage();
-                          }));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return LoginPage();
+                              },
+                            ),
+                          );
                         },
                         child: const Text(
                           'Don\'t have an account ?  ',
@@ -146,11 +148,5 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> loginUserAccount() async {
-    UserCredential user = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email!, password: password!);
-    print(user.user!.displayName);
   }
 }

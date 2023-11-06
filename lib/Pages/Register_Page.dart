@@ -3,7 +3,7 @@
 import 'package:chat_app/Pages/Login_Page.dart';
 import 'package:chat_app/Widgets/Custom_Form_Text_Field.dart';
 import 'package:chat_app/Widgets/Custom_button.dart';
-import 'package:chat_app/cubit/cubit/register_cubit.dart';
+import 'package:chat_app/cubit/register_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
