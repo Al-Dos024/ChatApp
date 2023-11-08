@@ -1,9 +1,11 @@
 import 'package:chat_app/Pages/Login_Page.dart';
 import 'package:chat_app/Pages/Register_Page.dart';
 import 'package:chat_app/Pages/chat_Page.dart';
+import 'package:chat_app/bloc/auth_bloc.dart';
 import 'package:chat_app/cubit/chat_cubit.dart';
 import 'package:chat_app/cubit/login_cubit.dart';
 import 'package:chat_app/cubit/register_cubit.dart';
+import 'package:chat_app/simple_Bloc_Observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +17,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  BlocOverrides.runZoned(() {
+    runApp(const MyApp());
+  }, blocObserver: SimpleBlocObserver());
 }
 
 class MyApp extends StatelessWidget {
@@ -33,6 +38,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ChatCubit(),
+        ),
+        BlocProvider(
+          create: (context) => AuthBloc(),
         ),
       ],
       child: MaterialApp(
